@@ -1,0 +1,86 @@
+{
+    "name": "datlechin/flarum-ai",
+    "description": "Drop-in AI integration for Flarum. Text generation, vector search, content filtering. OpenAI, Anthropic, Gemini, and custom provider support.",
+    "keywords": [
+        "flarum",
+        "ai",
+        "llm",
+        "embeddings",
+        "moderation",
+        "openai",
+        "gemini"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "flarum/core": "^1.8",
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "require-dev": {
+        "flarum/testing": "^1.8"
+    },
+    "authors": [
+        {
+            "name": "Ngo Quoc Dat",
+            "email": "datlechin@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Datlechin\\Ai\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Datlechin\\Ai\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "AI",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-brain",
+                "color": "#4A90E2",
+                "backgroundColor": "#E8F4F8"
+            }
+        },
+        "flarum-cli": {
+            "modules": {
+                "admin": true,
+                "forum": false,
+                "js": true,
+                "jsCommon": false,
+                "css": false,
+                "locale": true,
+                "gitConf": true,
+                "githubActions": true,
+                "prettier": true,
+                "typescript": true,
+                "bundlewatch": false,
+                "backendTesting": true,
+                "editorConfig": true,
+                "styleci": true
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": [
+            "@test:unit",
+            "@test:integration"
+        ],
+        "test:unit": "phpunit -c tests/phpunit.unit.xml",
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php"
+    },
+    "scripts-descriptions": {
+        "test": "Runs all tests.",
+        "test:unit": "Runs all unit tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
+    }
+}
