@@ -15,5 +15,4 @@ jobs:
       js_package_manager: npm
       main_git_branch: main
     secrets:
-      git_actor_token: ${{ secrets.GIT_ACTOR_TOKEN }}
       bundlewatch_github_token: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
