@@ -29,6 +29,7 @@ export default class AISettingsPage extends ExtensionPage {
     content(): JSX.Element;
     renderModelSelect(capability: string, stream: Stream<string>, customStream: Stream<string>): JSX.Element | null;
     updateModelsForProvider(provider: string): void;
+    hasCapability(capability: keyof ProviderCatalog): boolean;
     testTextModel(): Promise<void>;
     testEmbeddings(): Promise<void>;
     testModeration(): Promise<void>;
