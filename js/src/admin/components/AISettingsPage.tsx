@@ -136,14 +136,14 @@ export default class AISettingsPage extends ExtensionPage {
             </div>
 
             {this.renderModelSelect('text', this.textModel, this.customTextModel)}
-            {this.currentProvider() !== 'anthropic' && this.renderModelSelect('embeddings', this.embeddingsModel, this.customEmbeddingsModel)}
+            {this.hasCapability('embeddings') && this.renderModelSelect('embeddings', this.embeddingsModel, this.customEmbeddingsModel)}
             {this.currentProvider() === 'openai' && this.renderModelSelect('moderation', this.moderationModel, this.customModerationModel)}
 
             <div className="Form-group">
               <Button className="Button" onclick={() => this.testTextModel()} loading={this.isTestingText()} disabled={this.isTestingText()}>
                 {app.translator.trans('datlechin-ai.admin.settings.test_text_button')}
               </Button>{' '}
-              {this.currentProvider() !== 'anthropic' && (
+              {this.hasCapability('embeddings') && (
                 <Button
                   className="Button"
                   onclick={() => this.testEmbeddings()}
@@ -261,6 +261,15 @@ export default class AISettingsPage extends ExtensionPage {
     }
 
     m.redraw();
+  }
+
+  hasCapability(capability: keyof ProviderCatalog) {
+    const provider = this.currentProvider();
+    const providerCatalog = this.catalog[provider];
+
+    if (!providerCatalog) return false;
+
+    return Array.isArray(providerCatalog[capability]) && (providerCatalog[capability] as ModelOption[]).length > 0;
   }
 
   async testTextModel() {

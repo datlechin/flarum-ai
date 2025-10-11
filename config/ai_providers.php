@@ -18,16 +18,16 @@ return [
             ['value' => 'gpt-5-pro', 'label' => 'GPT-5 pro', 'capability' => ['text'], 'is_default' => true],
             ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['text']],
         ],
-        'embeddings' => [
-            ['value' => 'text-embedding-3-large', 'label' => 'Text Embedding 3 Large', 'capability' => ['embeddings']],
-            ['value' => 'text-embedding-3-small', 'label' => 'Text Embedding 3 Small', 'capability' => ['embeddings'], 'is_default' => true],
-            ['value' => 'text-embedding-ada-002', 'label' => 'Text Embedding Ada 002', 'capability' => ['embeddings'], 'is_default' => true],
-            ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['embeddings']],
-        ],
-        'moderation' => [
-            ['value' => 'omn-moderation-latest', 'label' => 'Omn Moderation Latest', 'capability' => ['moderation'], 'is_default' => true],
-            ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['moderation']],
-        ],
+        // 'embeddings' => [
+        //     ['value' => 'text-embedding-3-large', 'label' => 'Text Embedding 3 Large', 'capability' => ['embeddings']],
+        //     ['value' => 'text-embedding-3-small', 'label' => 'Text Embedding 3 Small', 'capability' => ['embeddings'], 'is_default' => true],
+        //     ['value' => 'text-embedding-ada-002', 'label' => 'Text Embedding Ada 002', 'capability' => ['embeddings'], 'is_default' => true],
+        //     ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['embeddings']],
+        // ],
+        // 'moderation' => [
+        //     ['value' => 'omn-moderation-latest', 'label' => 'Omn Moderation Latest', 'capability' => ['moderation'], 'is_default' => true],
+        //     ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['moderation']],
+        // ],
     ],
 
     'gemini' => [
@@ -37,14 +37,14 @@ return [
             ['value' => 'gemini-2.5-flash-lite', 'label' => 'Gemini 2.5 Flash-Lite', 'capability' => ['text']],
             ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['text']],
         ],
-        'embeddings' => [
-            ['value' => 'text-embedding-004', 'label' => 'Text Embedding 004', 'capability' => ['embeddings'], 'is_default' => true],
-            ['value' => 'gemini-embedding-001', 'label' => 'Gemini Embedding 001', 'capability' => ['embeddings']],
-            ['value' => 'gemini-embedding-exp', 'label' => 'Gemini Embedding Experimental', 'capability' => ['embeddings']],
-            ['value' => 'embedding-001', 'label' => 'Embedding 001', 'capability' => ['embeddings']],
-            ['value' => 'embedding-gecko-001', 'label' => 'Embedding Gecko 001', 'capability' => ['embeddings']],
-            ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['embeddings']],
-        ],
+        // 'embeddings' => [
+        //     ['value' => 'text-embedding-004', 'label' => 'Text Embedding 004', 'capability' => ['embeddings'], 'is_default' => true],
+        //     ['value' => 'gemini-embedding-001', 'label' => 'Gemini Embedding 001', 'capability' => ['embeddings']],
+        //     ['value' => 'gemini-embedding-exp', 'label' => 'Gemini Embedding Experimental', 'capability' => ['embeddings']],
+        //     ['value' => 'embedding-001', 'label' => 'Embedding 001', 'capability' => ['embeddings']],
+        //     ['value' => 'embedding-gecko-001', 'label' => 'Embedding Gecko 001', 'capability' => ['embeddings']],
+        //     ['value' => '__custom__', 'label' => 'Custom (advanced)', 'capability' => ['embeddings']],
+        // ],
     ],
 
     'anthropic' => [
