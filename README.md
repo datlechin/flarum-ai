@@ -301,3 +301,7 @@ $model = $settings->get('datlechin-ai.models.selected.text');
 
 - [Packagist](https://packagist.org/packages/datlechin/flarum-ai)
 - [GitHub](https://github.com/datlechin/flarum-ai)
+
+## Sponsor
+
+If you find this extension helpful, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/datlechin).
