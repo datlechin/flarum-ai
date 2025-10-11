@@ -27,6 +27,11 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "source": "https://github.com/datlechin/flarum-ai",
+        "forum": "https://discuss.flarum.org/d/FLARUM_DISCUSS_ID"
+    },
+    "homepage": "https://nqd.vn",
     "autoload": {
         "psr-4": {
             "Datlechin\\Ai\\": "src/"
