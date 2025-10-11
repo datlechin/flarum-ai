@@ -155,11 +155,11 @@ export default class AIStreamHandler {
         // Decode the chunk
         const chunk = decoder.decode(value, { stream: true });
         console.log('[AIStreamHandler] Raw chunk received:', chunk.length, 'bytes');
-        
+
         // Add to buffer and process complete lines
         buffer += chunk;
         const lines = buffer.split('\n');
-        
+
         // Keep the last incomplete line in buffer
         buffer = lines.pop() || '';
 
