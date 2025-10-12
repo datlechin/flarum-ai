@@ -292,7 +292,7 @@ $model = $settings->get('datlechin-ai.models.selected.text');
 
 ## Requirements
 
-- Flarum 1.8+
+- Flarum 1.2+
 - PHP 8.1+
 - Composer 2.0+
 - Valid API key for chosen provider

@@ -150,7 +150,7 @@ class AnthropicProvider implements LlmProviderInterface
 
                 $json = json_decode($data, true);
 
-                if (!$json) {
+                if (! $json) {
                     continue;
                 }
 
