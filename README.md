@@ -1,6 +1,6 @@
 # Flarum AI
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai-summarize.svg)](https://packagist.org/packages/datlechin/flarum-ai-summarize)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai)
 
 AI integration framework for Flarum with text generation, embeddings, and moderation. Multi-provider support (OpenAI, Gemini, Anthropic) with extensible architecture.
 
