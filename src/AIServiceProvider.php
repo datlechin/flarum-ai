@@ -2,33 +2,29 @@
 
 namespace Datlechin\Ai;
 
+use Datlechin\Ai\Provider\Anthropic\AnthropicProvider;
+use Datlechin\Ai\Provider\Google\GoogleProvider;
+use Datlechin\Ai\Provider\OpenAi\OpenAiProvider;
+use Datlechin\Ai\Provider\ProviderRegistry;
 use Flarum\Foundation\AbstractServiceProvider;
-use Illuminate\Contracts\Container\Container;
-use Datlechin\Ai\Providers\HttpProviderFactory;
-use Datlechin\Ai\Providers\ProviderCatalog;
-use Datlechin\Ai\Settings\SettingsRepository;
 
-class AIServiceProvider extends AbstractServiceProvider
+class AiServiceProvider extends AbstractServiceProvider
 {
-    public function register() {}
-
-    public function boot(Container $container)
+    public function register(): void
     {
-        $container->singleton(ProviderCatalog::class, function () {
-            return new ProviderCatalog();
-        });
+        $this->container->singleton(Settings::class);
+        $this->container->singleton(ModelResolver::class);
+        $this->container->singleton(Ai::class);
 
-        $container->singleton(SettingsRepository::class, function ($container) {
-            return new SettingsRepository(
-                $container->make(\Flarum\Settings\SettingsRepositoryInterface::class)
-            );
-        });
+        $this->container->singleton(ProviderRegistry::class, function ($container) {
+            $registry = new ProviderRegistry();
+            $settings = $container->make(Settings::class);
 
-        $container->singleton(HttpProviderFactory::class, function ($container) {
-            return new HttpProviderFactory(
-                $container->make(SettingsRepository::class),
-                $container->make(ProviderCatalog::class)
-            );
+            $registry->register(new OpenAiProvider($settings->apiKey('openai')));
+            $registry->register(new AnthropicProvider($settings->apiKey('anthropic')));
+            $registry->register(new GoogleProvider($settings->apiKey('google')));
+
+            return $registry;
         });
     }
 }

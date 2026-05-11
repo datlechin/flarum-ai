@@ -1,36 +1,24 @@
 datlechin-ai:
   admin:
     settings:
-      provider_label: AI Provider
-      provider_openai: OpenAI
-      provider_gemini: Google Gemini
-      provider_anthropic: Anthropic
+      provider_label: Provider
+      provider_help: Anthropic supports text generation only. OpenAI and Google also offer embeddings and moderation.
 
-      api_key_label: API Key ({provider})
-      api_key_placeholder: Enter your {provider} API key
+      api_key_label: API key
+      api_key_help: Required to call {provider}.
 
-      base_url_label: Base URL (optional)
-      base_url_placeholder: Leave empty for default
+      base_url_label: Base URL
+      base_url_help: Leave empty to use the official endpoint. Override only when routing through a proxy or compatible gateway.
+      base_url_placeholder: https://api.example.com
 
-      text_model_label: Text/Chat Model
-      embeddings_model_label: Embeddings Model
-      moderation_model_label: Moderation Model
+      text_model_label: Text model
+      text_model_help: Used for completions and streaming.
 
-      custom_model_label: Custom Model Name
-      custom_model_placeholder: Enter custom model name
-      custom_base_url_label: Custom Base URL
+      embeddings_model_label: Embeddings model
+      embeddings_model_help: Used to produce vector representations.
 
-      test_text_button: Test Text Model
-      test_embeddings_button: Test Embeddings
-      test_moderation_button: Test Moderation
+      moderation_model_label: Moderation model
+      moderation_model_help: Used to classify content for safety scores.
 
-      test_success: Test successful!
-      test_failed: "Test failed: {error}"
-
-  forum:
-    ai_search_placeholder: Search with AI...
-
-  permissions:
-    generate: Generate text with AI
-    embed: Generate embeddings
-    moderate: Use AI moderation
+      custom_model_option: Custom
+      custom_model_placeholder: e.g. gpt-4o-2024-08-06

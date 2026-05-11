@@ -1,6 +1,6 @@
 {
     "name": "datlechin/flarum-ai",
-    "description": "Drop-in AI integration for Flarum. Text generation, vector search, content filtering. OpenAI, Anthropic, Gemini, and custom provider support.",
+    "description": "AI provider toolkit for Flarum. Text generation, embeddings, moderation, with a self-declaring provider registry.",
     "keywords": [
         "flarum",
         "ai",
@@ -8,17 +8,18 @@
         "embeddings",
         "moderation",
         "openai",
+        "anthropic",
         "gemini"
     ],
     "type": "flarum-extension",
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "flarum/core": "^1.2",
+        "php": "^8.2",
+        "flarum/core": "^2.0.0-beta.5",
         "guzzlehttp/guzzle": "^7.9"
     },
     "require-dev": {
-        "flarum/testing": "^1.2"
+        "flarum/testing": "^2.0"
     },
     "authors": [
         {
@@ -29,9 +30,9 @@
     ],
     "support": {
         "source": "https://github.com/datlechin/flarum-ai",
-        "forum": "https://discuss.flarum.org/d/FLARUM_DISCUSS_ID"
+        "issues": "https://github.com/datlechin/flarum-ai/issues"
     },
-    "homepage": "https://nqd.vn",
+    "homepage": "https://github.com/datlechin/flarum-ai",
     "autoload": {
         "psr-4": {
             "Datlechin\\Ai\\": "src/"
@@ -48,44 +49,21 @@
             "category": "feature",
             "icon": {
                 "name": "fas fa-brain",
-                "color": "#4A90E2",
-                "backgroundColor": "#E8F4F8"
-            }
-        },
-        "flarum-cli": {
-            "modules": {
-                "admin": true,
-                "forum": false,
-                "js": true,
-                "jsCommon": false,
-                "css": false,
-                "locale": true,
-                "gitConf": true,
-                "githubActions": true,
-                "prettier": true,
-                "typescript": true,
-                "bundlewatch": false,
-                "backendTesting": true,
-                "editorConfig": true,
-                "styleci": true
+                "color": "#fff",
+                "backgroundColor": "#4A90E2"
             }
         }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": [
-            "@test:unit",
-            "@test:integration"
-        ],
+        "test": "@test:unit",
         "test:unit": "phpunit -c tests/phpunit.unit.xml",
-        "test:integration": "phpunit -c tests/phpunit.integration.xml",
-        "test:setup": "@php tests/integration/setup.php"
+        "test:setup": "@php -r \"echo \\\"No integration setup required.\\n\\\";\""
     },
     "scripts-descriptions": {
         "test": "Runs all tests.",
         "test:unit": "Runs all unit tests.",
-        "test:integration": "Runs all integration tests.",
-        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
+        "test:setup": "No-op placeholder for CI compatibility; this release ships unit tests only."
     }
 }
