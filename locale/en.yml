@@ -1,36 +1,32 @@
 datlechin-ai:
   admin:
-    settings:
-      provider_label: AI Provider
-      provider_openai: OpenAI
-      provider_gemini: Google Gemini
-      provider_anthropic: Anthropic
+    drivers:
+      anthropic: Anthropic
+      gemini: Google Gemini
+      openai: OpenAI
+      openai-compatible: OpenAI-compatible (OpenRouter, Groq, DeepSeek, Ollama, …)
 
-      api_key_label: API Key ({provider})
-      api_key_placeholder: Enter your {provider} API key
+    fields:
+      anthropic_api_key_help: Create one in the Claude Console, under API keys.
+      api_key_label: API key
+      base_url_help: "The address that ends in /v1, for example https://openrouter.ai/api/v1, https://api.groq.com/openai/v1 or http://localhost:11434/v1 for Ollama."
+      base_url_label: Base URL
+      gemini_api_key_help: Create one in Google AI Studio, under Get API key.
+      model_help: Pick one from the list, or type the ID of any model your provider offers.
+      model_label: Model
+      openai_api_key_help: Create one on the OpenAI platform, under API keys.
+      openai_compatible_api_key_help: Leave empty if the server needs none, like a local Ollama.
 
-      base_url_label: Base URL (optional)
-      base_url_placeholder: Leave empty for default
+    page:
+      driver_label: Provider
+      models_error: "Couldn't load the model list: {message}"
+      not_configured_message: AI isn't set up yet. Extensions that use it stay off until you choose a provider, add its key and pick a model.
+      test_button: Send test prompt
+      test_heading: Send a test prompt
+      test_success_message: "{model} replied in {seconds} s: {text}"
+      test_text: Asks the model to say hello, to check that the key and the model work. Save your changes first.
 
-      text_model_label: Text/Chat Model
-      embeddings_model_label: Embeddings Model
-      moderation_model_label: Moderation Model
-
-      custom_model_label: Custom Model Name
-      custom_model_placeholder: Enter custom model name
-      custom_base_url_label: Custom Base URL
-
-      test_text_button: Test Text Model
-      test_embeddings_button: Test Embeddings
-      test_moderation_button: Test Moderation
-
-      test_success: Test successful!
-      test_failed: "Test failed: {error}"
-
-  forum:
-    ai_search_placeholder: Search with AI...
-
-  permissions:
-    generate: Generate text with AI
-    embed: Generate embeddings
-    moderate: Use AI moderation
+  api:
+    no_driver_message: Choose a provider.
+    not_configured_message: Choose a provider, add its key and pick a model first.
+    provider_error_message: "The provider returned an error: {message}"
