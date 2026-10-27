@@ -1,37 +1,47 @@
 {
     "name": "datlechin/flarum-ai",
-    "description": "Drop-in AI integration for Flarum. Text generation, vector search, content filtering. OpenAI, Anthropic, Gemini, and custom provider support.",
+    "description": "Connect Flarum to OpenAI, Anthropic, Gemini or any OpenAI-compatible API, for other extensions to generate text with.",
     "keywords": [
         "flarum",
         "ai",
         "llm",
-        "embeddings",
-        "moderation",
         "openai",
-        "gemini"
+        "anthropic",
+        "gemini",
+        "openrouter",
+        "ollama"
     ],
     "type": "flarum-extension",
     "license": "MIT",
-    "require": {
-        "php": "^8.1",
-        "flarum/core": "^1.2",
-        "guzzlehttp/guzzle": "^7.9"
-    },
-    "require-dev": {
-        "flarum/testing": "^1.2"
-    },
+    "homepage": "https://github.com/datlechin/flarum-ai",
     "authors": [
         {
             "name": "Ngo Quoc Dat",
             "email": "datlechin@gmail.com",
+            "homepage": "https://nqd.vn",
             "role": "Developer"
         }
     ],
     "support": {
-        "source": "https://github.com/datlechin/flarum-ai",
-        "forum": "https://discuss.flarum.org/d/FLARUM_DISCUSS_ID"
+        "issues": "https://github.com/datlechin/flarum-ai/issues",
+        "source": "https://github.com/datlechin/flarum-ai"
     },
-    "homepage": "https://nqd.vn",
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/datlechin"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0",
+        "guzzlehttp/guzzle": "^7.7"
+    },
+    "require-dev": {
+        "flarum/phpstan": "^2.0",
+        "flarum/testing": "^2.0",
+        "laravel/pint": "^1.18"
+    },
     "autoload": {
         "psr-4": {
             "Datlechin\\Ai\\": "src/"
@@ -47,9 +57,9 @@
             "title": "AI",
             "category": "feature",
             "icon": {
-                "name": "fas fa-brain",
-                "color": "#4A90E2",
-                "backgroundColor": "#E8F4F8"
+                "name": "fas fa-wand-magic-sparkles",
+                "color": "#fff",
+                "backgroundColor": "#6d4aff"
             }
         },
         "flarum-cli": {
@@ -73,6 +83,9 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
     "scripts": {
         "test": [
             "@test:unit",
@@ -80,12 +93,18 @@
         ],
         "test:unit": "phpunit -c tests/phpunit.unit.xml",
         "test:integration": "phpunit -c tests/phpunit.integration.xml",
-        "test:setup": "@php tests/integration/setup.php"
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": [
+            "@php tests/phpstan-setup.php",
+            "phpstan analyse"
+        ],
+        "clear-cache:phpstan": "phpstan clear-result-cache"
     },
     "scripts-descriptions": {
         "test": "Runs all tests.",
         "test:unit": "Runs all unit tests.",
         "test:integration": "Runs all integration tests.",
-        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run static analysis"
     }
 }

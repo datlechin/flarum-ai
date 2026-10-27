@@ -1,307 +1,123 @@
-# Flarum AI
+# AI
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/datlechin/flarum-ai/blob/main/LICENSE) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai.svg)](https://packagist.org/packages/datlechin/flarum-ai) [![Sponsor](https://img.shields.io/github/sponsors/datlechin?logo=githubsponsors&label=Sponsor)](https://github.com/sponsors/datlechin)
 
-AI integration framework for Flarum with text generation, embeddings, and moderation. Multi-provider support (OpenAI, Gemini, Anthropic) with extensible architecture.
+Connects Flarum to a model provider: OpenAI, Anthropic, Google Gemini, or any server with an OpenAI-compatible API, such as OpenRouter, Groq, DeepSeek or a local Ollama.
 
-## Features
+It adds nothing to the forum by itself. Extensions such as [AI Summarize](https://github.com/datlechin/flarum-ai-summarize) use it to write text.
 
-- 🤖 Text generation with streaming support
-- 🔍 Vector embeddings for semantic search
-- 🛡️ AI-powered content moderation
-- 🔌 Multi-provider architecture (OpenAI, Gemini, Anthropic)
-- ⚡ SSE streaming for real-time responses
-- 🔧 Extensible provider system
+![The AI settings page](https://raw.githubusercontent.com/datlechin/flarum-ai/main/screenshots/settings.png)
 
-## Installation
+## Install
 
-```bash
+```sh
 composer require datlechin/flarum-ai
 ```
 
-## Configuration
+Enable AI under Admin > Extensions. Needs Flarum 2.0 and PHP 8.3.
 
-1. Navigate to **Admin Panel → Extensions → AI**
-2. Select your LLM provider (OpenAI, Gemini, or Anthropic)
-3. Enter your API key
-4. Configure model settings
+## Set up
 
-## Developer Usage
+On the AI extension page:
 
-### Text Generation
+1. Choose a provider.
+2. Paste its API key. For an OpenAI-compatible server, also its base URL.
+3. Save, then choose a model. The list comes from the provider, and you can type any other model ID.
+4. Save again and click **Send test prompt**. The model's reply shows up as a message.
 
-```php
-use Datlechin\Ai\Providers\HttpProviderFactory;
+| Provider | Needs | Calls |
+| --- | --- | --- |
+| OpenAI | API key | Responses API, with response storage off |
+| Anthropic | API key | Messages API |
+| Google Gemini | API key | `generateContent` |
+| OpenAI-compatible | Base URL, and an API key if the server asks for one | Chat Completions |
 
-// Get the provider instance
-$provider = app(HttpProviderFactory::class)->createLlmProvider();
+Until a provider, a key and a model are set, extensions that use AI stay off.
 
-// Generate text
-$messages = [
-    ['role' => 'system', 'content' => 'You are a helpful assistant.'],
-    ['role' => 'user', 'content' => 'Hello!']
-];
+Each provider keeps its own key and model, so switching back and forth loses nothing. Keys are stored in the settings table and only admins see them.
 
-$result = $provider->complete($messages);
-echo $result['content'];
+When a request fails, the provider's error goes to the Flarum log in `storage/logs`.
+
+## What leaves the forum
+
+Everything an extension puts in a prompt goes to the provider you choose. For AI Summarize, that is the posts of the discussion being summarized. Check the provider's data policy before turning it on.
+
+## Update
+
+```sh
+composer update datlechin/flarum-ai
+php flarum migrate
+php flarum cache:clear
 ```
 
-### Streaming Text Generation
+From 0.1.x, the provider, its key and its text model carry over. An OpenAI provider with a custom base URL becomes OpenAI-compatible. The [changelog](https://github.com/datlechin/flarum-ai/blob/main/CHANGELOG.md) lists what was removed.
+
+## For extension authors
+
+Require `datlechin/flarum-ai` and inject `Datlechin\Ai\Ai`:
 
 ```php
-// Stream responses in real-time
-foreach ($provider->stream($messages) as $chunk) {
-    echo $chunk; // Output each chunk as it arrives
+use Datlechin\Ai\Ai;
+use Datlechin\Ai\Prompt;
+
+$response = $ai->generate(Prompt::make(
+    instructions: 'Reply with one sentence.',
+    input: $text,
+    maxOutputTokens: 300,
+));
+
+$response->text;
+$response->model;
+$response->usage->inputTokens;
+$response->usage->outputTokens;
+$response->truncated;
+```
+
+`stream()` takes the same prompt, yields the text as it arrives, and returns the `Response` at the end:
+
+```php
+$stream = $ai->stream($prompt);
+
+foreach ($stream as $text) {
+    // ...
 }
+
+$response = $stream->getReturn();
 ```
 
-### Embeddings
+For a conversation, pass the messages yourself: `new Prompt($instructions, [Message::user('...'), Message::assistant('...'), Message::user('...')])`.
+
+Call `$ai->isConfigured()` before offering a feature. Otherwise:
+
+| Exception | When | Unhandled in an API request |
+| --- | --- | --- |
+| `Datlechin\Ai\Exception\NotConfiguredException` | No provider, key or model | 503 `ai_not_configured` |
+| `Datlechin\Ai\Exception\ProviderException` | The provider refused or failed | 502 `ai_provider_error` |
+
+`Datlechin\Ai\Event\Generated` fires after every generation with the driver name, the prompt and the response, token usage included. Listen to it to keep track of spending.
+
+### Adding a provider
 
 ```php
-use Datlechin\Ai\Providers\HttpProviderFactory;
-
-// Get embeddings provider
-$provider = app(HttpProviderFactory::class)->createEmbeddingsProvider();
-
-// Generate embeddings
-$text = "This is some text to embed";
-$embedding = $provider->embed($text);
-
-// Returns array of floats (vector representation)
-print_r($embedding);
-```
-
-### Content Moderation
-
-```php
-use Datlechin\Ai\Providers\HttpProviderFactory;
-
-// Get moderation provider
-$provider = app(HttpProviderFactory::class)->createModerationProvider();
-
-// Check content
-$result = $provider->moderate("Content to check");
-
-if ($result['flagged']) {
-    // Handle flagged content
-    print_r($result['categories']);
-}
-```
-
-## Creating Custom Providers
-
-Implement the provider interfaces:
-
-```php
-namespace MyExtension\Providers;
-
-use Datlechin\Ai\Providers\Contracts\LlmProviderInterface;
-
-class CustomLlmProvider implements LlmProviderInterface
-{
-    public function complete(array $messages, array $options = []): array
-    {
-        // Your implementation
-        return [
-            'content' => 'Generated text',
-            'usage' => ['tokens' => 100]
-        ];
-    }
-
-    public function stream(array $messages, array $options = []): \Generator
-    {
-        // Yield chunks
-        yield "chunk1";
-        yield "chunk2";
-    }
-
-    public function getName(): string
-    {
-        return 'custom';
-    }
-
-    public function getModel(): string
-    {
-        return 'custom-model';
-    }
-}
-```
-
-Register in `extend.php`:
-
-```php
-use Datlechin\Ai\Providers\ProviderCatalog;
+use Datlechin\Ai\Extend\Ai;
 
 return [
-    (new Extend\ServiceProvider())
-        ->register(function ($container) {
-            $catalog = $container->make(ProviderCatalog::class);
-            $catalog->register('custom', MyCustomProvider::class);
-        }),
+    (new Ai())->driver('mistral', MistralDriver::class),
 ];
 ```
 
-## Available Providers
+A driver implements `Datlechin\Ai\Driver\DriverInterface`:
 
-### OpenAI
+- `label()`: a translation key for the provider list.
+- `fields()`: the settings it needs, as `Datlechin\Ai\Driver\Field` objects. The AI page shows and validates them.
+- `models()`: model IDs for the model list.
+- `generate()` and `stream()`.
 
-- Models: GPT-4, GPT-4 Turbo, GPT-3.5 Turbo
-- Supports: Text generation, embeddings, moderation
-- Streaming: ✅
-
-### Google Gemini
-
-- Models: Gemini Pro, Gemini Flash
-- Supports: Text generation, embeddings
-- Streaming: ✅
-
-### Anthropic
-
-- Models: Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus
-- Supports: Text generation
-- Streaming: ✅
-
-## Events
-
-Listen to AI events in your extensions:
-
-```php
-use Datlechin\Ai\Events\TextGenerated;
-use Illuminate\Contracts\Events\Dispatcher;
-
-return [
-    (new Extend\Event())
-        ->listen(TextGenerated::class, function (TextGenerated $event) {
-            // $event->content
-            // $event->provider
-            // $event->model
-        }),
-];
-```
-
-Available events:
-
-- `TextGenerationStarted`
-- `TextGenerated`
-- `EmbeddingsStarted`
-- `EmbeddingsGenerated`
-- `ModerationStarted`
-- `ModerationCompleted`
-- `ProviderInitialized`
-- `ProviderFailed`
-
-## API Endpoints
-
-### Generate Text
-
-```http
-POST /api/ai/generate
-Content-Type: application/json
-
-{
-  "messages": [
-    {"role": "system", "content": "You are helpful"},
-    {"role": "user", "content": "Hello"}
-  ],
-  "stream": true
-}
-```
-
-### Generate Embeddings
-
-```http
-POST /api/ai/embeddings
-Content-Type: application/json
-
-{
-  "text": "Text to embed"
-}
-```
-
-### Moderate Content
-
-```http
-POST /api/ai/moderate
-Content-Type: application/json
-
-{
-  "content": "Content to check"
-}
-```
-
-## Extension Examples
-
-### Text Summarization
-
-```php
-$provider = app(HttpProviderFactory::class)->createLlmProvider();
-
-$messages = [
-    ['role' => 'system', 'content' => 'Summarize the following text concisely.'],
-    ['role' => 'user', 'content' => $longText]
-];
-
-$summary = $provider->complete($messages);
-```
-
-### Semantic Search
-
-```php
-$embeddingsProvider = app(HttpProviderFactory::class)->createEmbeddingsProvider();
-
-// Embed query
-$queryVector = $embeddingsProvider->embed($searchQuery);
-
-// Search in database (using vector similarity)
-$results = DB::table('ai_embeddings')
-    ->selectRaw('*, vector_distance(embedding, ?) as distance', [$queryVector])
-    ->orderBy('distance')
-    ->limit(10)
-    ->get();
-```
-
-### Content Filtering
-
-```php
-$moderationProvider = app(HttpProviderFactory::class)->createModerationProvider();
-
-$result = $moderationProvider->moderate($userContent);
-
-if ($result['flagged']) {
-    // Auto-hide or flag for review
-    $post->hide();
-}
-```
-
-## Configuration Options
-
-Settings available in admin panel:
-
-- `datlechin-ai.provider` - Selected provider (openai, gemini)
-- `datlechin-ai.api_key` - API key for provider
-- `datlechin-ai.models.selected.text` - Text generation model
-- `datlechin-ai.models.selected.embeddings` - Embeddings model
-- `datlechin-ai.models.selected.moderation` - Moderation model
-
-Access in code:
-
-```php
-$provider = $settings->get('datlechin-ai.provider');
-$model = $settings->get('datlechin-ai.models.selected.text');
-```
-
-## Requirements
-
-- Flarum 1.2+
-- PHP 8.1+
-- Composer 2.0+
-- Valid API key for chosen provider
+Extending `Datlechin\Ai\Driver\HttpDriver` gives it the shared HTTP client, provider error messages and a server-sent events reader. The chosen model is stored in `datlechin-ai.{name}.model`.
 
 ## Links
 
+- [AI Summarize](https://github.com/datlechin/flarum-ai-summarize)
 - [Packagist](https://packagist.org/packages/datlechin/flarum-ai)
 - [GitHub](https://github.com/datlechin/flarum-ai)
-
-## Sponsor
-
-If you find this extension helpful, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/datlechin).
+- [Report an issue](https://github.com/datlechin/flarum-ai/issues)
